@@ -83,13 +83,22 @@ This project employs a multi-faceted analytical approach:
 ![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/heatmap1.jpg)
 and dealing with it with KNN Imputer
 
-.. code
+```python
+from sklearn.impute import KNNImputer
+imputer=KNNImputer()
+x_arr=imputer.fit_transform(df[['ENROLL','OTHER_EXPENDITURE']])
+df_=pd.DataFrame(x_arr,columns=imputer.get_feature_names_out())
+df.drop(['ENROLL','OTHER_EXPENDITURE'],axis=1,inplace=True)
+df=pd.concat([df,df_],axis=1)
+```
 
 ![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/heatmap2.jpg)
 
 - drop duplicated rows
 
-  ...code
+  ``` python
+  df.drop_duplicates(inplace=True)
+  ```
 
 
 ## EDA
@@ -121,7 +130,16 @@ This report examines per-student expenditure in public education across four reg
 
 ----
 
-p value code 
+``` python
+import statsmodels.formula.api as sm
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+from statsmodels.stats.anova import anova_lm
+
+model = sm.ols('PER_STUDENT_EXPENDITURE ~ C(REGION)', data=df).fit()
+anova_table = anova_lm(model, typ=2)  # Use anova_lm directly
+print("ANOVA Results:\n", anova_table)
+
+```
 
 - **Highly Significant Difference:** The p-value **(PR(>F))** for C(REGION) is extremely small (1.275420e-57, which is essentially 0 for practical purposes).  This means there is a highly statistically significant difference in per-student expenditure between at least two of the regions.  It's extremely unlikely that these differences are due to random chance.
 - **Large F-statistic:** The F-statistic (99.274199) is very large, which further supports the conclusion of significant differences between region means.
@@ -152,11 +170,66 @@ p value code
 
 ![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/featureImportance.jpg)
 
+``` python 
+
+pipeline_lr = Pipeline([
+    ('preprocessor', preprocessor),
+    ('regressor', LinearRegression())])
+
+pipeline_lr.fit(X_train, y_train)
+y_pred_lr = pipeline_lr.predict(X_test)
+
+# Random Forest Regressor Model
+pipeline_rf = Pipeline([
+    ('preprocessor', preprocessor),
+    ('regressor', RandomForestRegressor(random_state=42))])  # Add hyperparameters if needed
+
+pipeline_rf.fit(X_train, y_train)
+y_pred_rf = pipeline_rf.predict(X_test)
+
+# Evaluation function
+def evaluate_model(y_true, y_pred, model_name):
+    mse = mean_squared_error(y_true, y_pred)
+    r2 = r2_score(y_true, y_pred)
+    print(f"{model_name} - Mean Squared Error: {mse}")
+    print(f"{model_name} - R-squared: {r2}")
+    return mse, r2
+
+# Evaluate models
+mse_lr, r2_lr = evaluate_model(y_test, y_pred_lr, "Linear Regression")
+mse_rf, r2_rf = evaluate_model(y_test, y_pred_rf, "Random Forest")
+```
+
+### Plotting 
+
+``` python
+feature_importances = pipeline_rf.named_steps['regressor'].feature_importances_
+
+
+feature_names = pipeline_rf.named_steps['preprocessor'].get_feature_names_out()
+
+
+importance_df = pd.DataFrame({'Feature': feature_names, 'Importance': feature_importances})
+importance_df = importance_df.sort_values(by='Importance', ascending=False)
+
+print("\nFeature Importances (Random Forest):\n", importance_df)
+
+
+plt.figure(figsize=(10, 6))
+plt.barh(importance_df['Feature'], importance_df['Importance'])
+plt.xlabel('Importance')
+plt.title('Random Forest Feature Importances')
+plt.gca().invert_yaxis()  # Invert to show most important at the top
+plt.tight_layout()
+plt.show()
+```
+
 **summary:** The Random Forest model provides better predictions of enrollment than Linear Regression.  While both models show a good fit based on R-squared, the high MSE values suggest that there are likely other factors influencing enrollment that are not being captured by the current model.  Further investigation, including feature importance analysis and addressing the high MSE, is necessary.
 
 ### Model Insights Interpretation
 
-    - **Dominant Influence of OTHER_EXPENDITURE:** 
+
+- **Dominant Influence of OTHER_EXPENDITURE:** 
 `OTHER_EXPENDITURE` has by far the highest importance.  This suggests that expenditures categorized as "other" (which could include various administrative, operational, or miscellaneous spending) are the strongest predictor of enrollment.
 - **Significant Role of CAPITAL_OUTLAY_EXPENDITURE:**
   `CAPITAL_OUTLAY_EXPENDITURE` (spending on infrastructure, buildings, etc.) also plays a substantial role in predicting enrollment.  This makes intuitive sense, as investments in facilities can influence student capacity and attractiveness of schools.
@@ -167,7 +240,9 @@ p value code
 ----    
 
 ## Report and Recommendations:
-    1. **Focus on Expenditure Analysis:** The strong influence of expenditures, particularly `OTHER_EXPENDITURE` and `CAPITAL_OUTLAY_EXPENDITURE`, suggests that a detailed breakdown and analysis of spending patterns are crucial to understanding enrollment trends.  InvestInMind could focus on research that examines:
+
+   
+1. **Focus on Expenditure Analysis:** The strong influence of expenditures, particularly `OTHER_EXPENDITURE` and `CAPITAL_OUTLAY_EXPENDITURE`, suggests that a detailed breakdown and analysis of spending patterns are crucial to understanding enrollment trends.  InvestInMind could focus on research that examines:
    
    - What constitutes "OTHER_EXPENDITURE" and how it varies across districts or states.
    - The relationship between capital investments and enrollment growth or decline.
@@ -210,7 +285,7 @@ The code for this project is written in Python and leverages the following libra
 * `scikit-learn`: For machine learning tasks (model training, evaluation, preprocessing).
 * `statsmodels`: For statistical modeling and hypothesis testing.
 
-The main script for the analysis is `educational_finances_analysis.py`.  Supporting scripts or Jupyter notebooks may be included in the repository for specific tasks or analyses.
+The main script for the analysis is educational_finances_analysis.py. Supporting scripts or Jupyter notebooks may be included in the repository for specific tasks or analyses.
 
 ## Running the Code
 
