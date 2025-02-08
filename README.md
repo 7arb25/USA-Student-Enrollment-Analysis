@@ -1,5 +1,7 @@
 # U.S. Educational Finances Analysis: Uncovering Insights for Equitable Education
 
+![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/Intro.jpg)
+
 This project delves into the complexities of U.S. educational finance data to identify trends, disparities, and key factors influencing student enrollment.  The analysis is specifically designed to provide actionable insights for the InvestInMind Foundation, empowering them to make informed decisions and maximize their impact in promoting equitable educational opportunities.
 
 ## Project Overview
@@ -14,7 +16,8 @@ This repository houses the complete code, data, and analysis pipeline for explor
 
 ## Dataset
 
-The primary dataset used in this analysis is sourced from [Source of Data - *You MUST add this*]. It encompasses financial data related to U.S. public education, including:
+The primary dataset used in this analysis is sourced from [census.gov](https://www.census.gov/programs-surveys/school-finances/data/tables.html)
+[nationsreportcard](https://www.nationsreportcard.gov/ndecore/landing). It encompasses financial data related to U.S. public education, including:
 
 * **Financial Metrics:**
     * `FEDERAL_REVENUE`: Federal funding allocated to education.
@@ -31,10 +34,10 @@ The primary dataset used in this analysis is sourced from [Source of Data - *You
     * `STATE`: The U.S. state.
     * `YEAR`: The academic year.
     * `ENROLL`: Student enrollment.
-    * `REGION`:  The geographic region (Northeast, Midwest, South, West).  *(This column is created during data preprocessing based on state information.)*
-    * [Add other relevant columns if available, e.g., poverty rates, student demographics].
+    * `REGION`:  **added by me** The geographic region (Northeast, Midwest, South, West).  *(This column is created during data preprocessing based on state information.)*
 
-A detailed description of each column, including data types and units, can be found in [Link to Data Dictionary or Description - *You MUST add this if available*].  The data spans from [1992] to [2015].
+
+A detailed description of each column, including data types and units, can be found in [KAGGLE](https://www.kaggle.com/datasets/noriuk/us-educational-finances).  The data spans from [1992] to [2015].
 
 ## Methodology
 
@@ -65,24 +68,35 @@ This project employs a multi-faceted analytical approach:
         * **Random Forest Regressor:** A more complex model to capture potential non-linear relationships.
     * **Model Evaluation:** Model performance is assessed using Mean Squared Error (MSE) and R-squared (R²) metrics.
     * **Hyperparameter Tuning (Optional):**  If computational resources allow, model hyperparameters may be tuned using techniques like GridSearchCV or RandomizedSearchCV.
-- **WE DIDN'T DO THAT FOR FUNDAMENTAL REASONS**
+  **WE DIDN'T DO THAT FOR FUNDAMENTAL REASONS**
 
 5. **Feature Importance Analysis:**
 
+  - Using both graphical and numerical summary
+  - drow conclusions and recommendations based on that
+  
 
-**summary:** The Random Forest model provides better predictions of enrollment than Linear Regression.  While both models show a good fit based on R-squared, the high MSE values suggest that there are likely other factors influencing enrollment that are not being captured by the current model.  Further investigation, including feature importance analysis and addressing the high MSE, is necessary.
+## DATA CLEANING:
+
+- it was just a few missing "numerical"features
+
+![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/heatmap1.jpg)
+and dealing with it with KNN Imputer
+
+.. code
+
+![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/heatmap2.jpg)
+
+- drop duplicated rows
+
+  ...code
 
 
-    - **Dominant Influence of OTHER_EXPENDITURE:** 
-`OTHER_EXPENDITURE` has by far the highest importance.  This suggests that expenditures categorized as "other" (which could include various administrative, operational, or miscellaneous spending) are the strongest predictor of enrollment.
-- **Significant Role of CAPITAL_OUTLAY_EXPENDITURE:**
-  `CAPITAL_OUTLAY_EXPENDITURE` (spending on infrastructure, buildings, etc.) also plays a substantial role in predicting enrollment.  This makes intuitive sense, as investments in facilities can influence student capacity and attractiveness of schools.
+## EDA
 
-- **Moderate Influence of STATE_REVENUE and SUPPORT_SERVICES_EXPENDITURE:** `STATE_REVENUE` and `SUPPORT_SERVICES_EXPENDITURE` have a moderate impact.  State funding and spending on support services (administration, counseling, etc.) are relevant, but less influential than the top two.
-- **Lower Influence of Other Factors:** The remaining features, including instruction expenditure, federal and local revenue, and region, have relatively low importance in comparison.  While they still contribute to the model's predictive power, their influence is less pronounced.'"
+![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/Screenshot_%D9%A2%D9%A0%D9%A2%D9%A5-%D9%A0%D9%A2-%D9%A0%D9%A8-%D9%A0%D9%A2-%D9%A4%D9%A7-%D9%A2%D9%A5-%D9%A7%D9%A6_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
 
-----    
-trend pic
+### Conclusions
 
 - **Upward Trend:** The most prominent feature is the clear upward trend in per-student expenditure over time. This indicates that, on average, the amount of money spent per student in the given context (likely US public education) has increased consistently from 1995 to 2015.
 - **Steady Growth:** The increase appears relatively steady, with no dramatic spikes or drops. The line shows a gradual but consistent rise over the 20-year period.
@@ -91,7 +105,7 @@ trend pic
 
 ----
 
-box plot
+![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/boxplot.jpg)
 
 This report examines per-student expenditure in public education across four regions of the United States: Midwest, Northeast, South, and West. The analysis is based on data that has been processed to calculate per-student expenditure and categorize states into these regions.
 
@@ -101,7 +115,7 @@ This report examines per-student expenditure in public education across four reg
 - **Significant Regional Disparities:** The difference in per-student spending between the highest-spending (Northeast) and lowest-spending (South) regions is substantial ($4,772.75). This highlights significant financial disparities in educational investment across different regions.
 - **Potential Implications:** These spending disparities could potentially lead to variations in educational resources, quality of instruction, and student outcomes across regions. Further investigation is warranted to explore the correlation between per-student expenditure and educational performance metrics.
 
-- **RECOMMENDATIONS**
+### RECOMMENDATIONS
   - **Resource Allocation Review:** Policymakers and educational stakeholders in lower-spending regions (especially the South) may need to review resource allocation strategies to ensure equitable educational opportunities for all students.
   - **Performance Evaluation:** Evaluate educational performance metrics (e.g., standardized test scores, graduation rates) in conjunction with per-student expenditure to determine the impact of spending on student outcomes.
 
@@ -115,7 +129,9 @@ p value code
 
 ----
 
-two bar plots 
+![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/barplot1.jpg)
+
+![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/barplot2.jpg)
 
 - **Regional Variation in Funding Balance:**
 
@@ -130,10 +146,27 @@ two bar plots
 
 - **Federal Role in Targeted Support:**  While the overall federal contribution is small, federal funding often targets specific needs or student populations (e.g., low-income students, special education). Its impact might be more significant in specific areas or programs.
 
+----
 
+## Machine Learning Modelling
 
+![img alt](https://github.com/7arb25/USA-Student-Enrollment-Analysis/blob/071d92e8b1223111467215725ff316cc88c2db2b/Imgs/featureImportance.jpg)
 
-6. **Report Generation and Recommendations:**
+**summary:** The Random Forest model provides better predictions of enrollment than Linear Regression.  While both models show a good fit based on R-squared, the high MSE values suggest that there are likely other factors influencing enrollment that are not being captured by the current model.  Further investigation, including feature importance analysis and addressing the high MSE, is necessary.
+
+### Model Insights Interpretation
+
+    - **Dominant Influence of OTHER_EXPENDITURE:** 
+`OTHER_EXPENDITURE` has by far the highest importance.  This suggests that expenditures categorized as "other" (which could include various administrative, operational, or miscellaneous spending) are the strongest predictor of enrollment.
+- **Significant Role of CAPITAL_OUTLAY_EXPENDITURE:**
+  `CAPITAL_OUTLAY_EXPENDITURE` (spending on infrastructure, buildings, etc.) also plays a substantial role in predicting enrollment.  This makes intuitive sense, as investments in facilities can influence student capacity and attractiveness of schools.
+
+- **Moderate Influence of STATE_REVENUE and SUPPORT_SERVICES_EXPENDITURE:** `STATE_REVENUE` and `SUPPORT_SERVICES_EXPENDITURE` have a moderate impact.  State funding and spending on support services (administration, counseling, etc.) are relevant, but less influential than the top two.
+- **Lower Influence of Other Factors:** The remaining features, including instruction expenditure, federal and local revenue, and region, have relatively low importance in comparison.  While they still contribute to the model's predictive power, their influence is less pronounced.'"
+
+----    
+
+## Report and Recommendations:
     1. **Focus on Expenditure Analysis:** The strong influence of expenditures, particularly `OTHER_EXPENDITURE` and `CAPITAL_OUTLAY_EXPENDITURE`, suggests that a detailed breakdown and analysis of spending patterns are crucial to understanding enrollment trends.  InvestInMind could focus on research that examines:
    
    - What constitutes "OTHER_EXPENDITURE" and how it varies across districts or states.
@@ -164,6 +197,8 @@ two bar plots
 
    -Explore the causal relationships between expenditures and enrollment (using more advanced statistical techniques).
    - Investigate the impact of specific programs or interventions on enrollment and student outcomes.
+
+     
 ## Code
 
 The code for this project is written in Python and leverages the following libraries:
